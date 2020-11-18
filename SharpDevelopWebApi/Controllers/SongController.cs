@@ -13,7 +13,7 @@ using System.Web.Http;
     {
         [Route("api/song/getsong")]
         [HttpGet]
-        public IHttpActionResult GeySong()
+        public IHttpActionResult GetSong()
         {
 
             var mySong = new Song();
@@ -23,7 +23,7 @@ using System.Web.Http;
             mySong.Genre = "pop";
             
 
-            return BadRequest("eror");
+            return Ok("mysong");
         }
     
         [Route("api/song/")]
@@ -40,14 +40,13 @@ using System.Web.Http;
             songs.Add(song1);
 
             var mySong = new Song();
-            mySong.Id = 1;
+            mySong.Id = 2;
             mySong.Title = "hello my love";
             mySong.Artist = "westlife";
             mySong.Genre = "pop";
             songs.Add(mySong);
 
-           
-
+          
             return Ok(songs);
         }
 
