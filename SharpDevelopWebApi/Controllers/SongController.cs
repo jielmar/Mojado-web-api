@@ -11,43 +11,62 @@ using System.Web.Http;
 	
     public class SongController : ApiController
     {
-        [Route("api/song/getsong")]
-        [HttpGet]
-        public IHttpActionResult GetSong()
+    	SDWebApiDbContext _db  = new SDWebApiDbContext();
+    	
+    	[HttpGet]
+    	public IHttpActionResult GetAll(){
+    		
+    		List<Song> songs =_db.Songs.ToList();
+    		return Ok(songs);
+    	}
+    	[HttpGet]
+    	public IHttpActionResult Get (int Id){
+    		
+    		var song  = _db.Songs.Find(Id);
+    		if (song != null){
+    			return Ok(song);
+    		}
+    		else{
+    			return BadRequest("Song not found");
+    		}
+    	}
+    	
+    	
+    	public IHttpActionResult Create([FromBody]Song song){
+    		_db.Songs.Add(song);
+    		_db.SaveChanges();
+    		return Ok(song.Id);
+    	}
+    	[HttpPut]
+    	public IHttpActionResult Update([FromBody]Song updatedsong){
+    		var song = _db.Songs.Find(updatedsong.Id);
+    		if ( song != null){
+    			song.Artist = updatedsong.Artist;
+    		song.Title = updatedsong.Title;
+    		song.Genre = updatedsong.Genre;
+    		_db.Entry (song).State = System.Data.Entity.EntityState.Modified;	
+    		_db.SaveChanges();
+    		
+    		return Ok(song);
+    		}
+    		else{
+    			return BadRequest("error");
+    		}
+    	}
+    	[HttpDelete]
+        public IHttpActionResult Delete(int Id)
         {
-
-            var mySong = new Song();
-            mySong.Id = 1;
-            mySong.Title = "hello my love";
-            mySong.Artist = "westlife";
-            mySong.Genre = "pop";
-            
-
-            return Ok("mysong");
+            var song = _db.Songs.Find(Id);
+            if (song != null)
+            {
+                _db.Songs.Remove(song);
+                _db.SaveChanges();
+                return Ok("Song successfully deleted");
+            }
+            else{
+               return BadRequest("songs not found");
+            }
+              
         }
-    
-        [Route("api/song/")]
-        [HttpGet]
-        public IHttpActionResult GetSongs()
-        {
-            var songs = new List<Song>();
-
-            var song1 = new Song();
-            song1.Id = 1;
-            song1.Title = "welcome to my paradise";
-            song1.Artist = "bob marley";
-            song1.Genre = "slow rock";
-            songs.Add(song1);
-
-            var mySong = new Song();
-            mySong.Id = 2;
-            mySong.Title = "hello my love";
-            mySong.Artist = "westlife";
-            mySong.Genre = "pop";
-            songs.Add(mySong);
-
-          
-            return Ok(songs);
-        }
-
+        
     }
