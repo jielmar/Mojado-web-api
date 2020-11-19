@@ -19,8 +19,8 @@ namespace SharpDevelopWebApi.Models
         public string Title { get; set; }
         public string Artist { get; set; }
         public string Genre{ get; set; }
-        public int ReleaseYear { get; set; }
         public int peakChartposition { get; set; }
+        public int YearRelease { get; set; }
 	
 	}
 }

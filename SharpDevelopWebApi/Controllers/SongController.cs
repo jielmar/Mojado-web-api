@@ -14,7 +14,7 @@ using System.Web.Http;
     	SDWebApiDbContext _db  = new SDWebApiDbContext();
     	
     	[HttpGet]
-    	 public IHttpActionResult GetAll(string search = "", string Artist = "" )
+    	public IHttpActionResult GetAll(string search = "", string Artist = "", int ? year= null, int ? peak = null)
     	{
     		List<Song> songs;
     		
@@ -30,15 +30,21 @@ using System.Web.Http;
     			                       ).OrderBy(or => or.Title).ToList();
     			
     		}
-    	    if(string.IsNullOrWhiteSpace(Artist)){
+    	    if(string.IsNullOrWhiteSpace(Artist))
+    	    {
     	    	songs = songs.Where( x => x.Artist.ToLower() == Artist.ToLower()).ToList();
     	    }
-    	    	
-    	    	
-    	int totalcount = songs.Count();
-    	return Ok(new{totalcount, songs});
-
+    	    if ( year != null)
+    	    {
+    	    	songs=  songs.Where(x => x.YearRelease == year.Value).ToList();
+    	    }
+    	    if( peak != null )
+    	    {
+    	    	songs=  songs.Where(x => x.peakChartposition <= peak).ToList();
     	}
+    	    int totalcount = songs.Count();
+    	return Ok(new{totalcount, songs});
+    }
     	[HttpGet]
     	public IHttpActionResult Get (int Id){
     		
@@ -50,7 +56,6 @@ using System.Web.Http;
     			return BadRequest("Song not found");
     		}
     	}
-    	
     	
     	public IHttpActionResult Create([FromBody]Song song){
     		_db.Songs.Add(song);
