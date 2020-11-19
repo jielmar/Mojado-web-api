@@ -14,10 +14,30 @@ using System.Web.Http;
     	SDWebApiDbContext _db  = new SDWebApiDbContext();
     	
     	[HttpGet]
-    	public IHttpActionResult GetAll(){
+    	 public IHttpActionResult GetAll(string search = "", string Artist = "" )
+    	{
+    		List<Song> songs;
     		
-    		List<Song> songs =_db.Songs.ToList();
-    		return Ok(songs);
+    		if(string.IsNullOrWhiteSpace(search)){
+    			
+    			songs =_db.Songs.ToList();
+    		}
+    	    else
+    		{
+    			songs = _db.Songs.Where( x => 
+    			                        x.Title.ToLower().Contains(search.ToLower())
+    			                        || x.Artist.ToLower().Contains(search.ToLower())
+    			                       ).OrderBy(or => or.Title).ToList();
+    			
+    		}
+    	    if(string.IsNullOrWhiteSpace(Artist)){
+    	    	songs = songs.Where( x => x.Artist.ToLower() == Artist.ToLower()).ToList();
+    	    }
+    	    	
+    	    	
+    	int totalcount = songs.Count();
+    	return Ok(new{totalcount, songs});
+
     	}
     	[HttpGet]
     	public IHttpActionResult Get (int Id){

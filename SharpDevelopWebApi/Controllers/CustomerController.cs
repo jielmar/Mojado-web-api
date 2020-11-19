@@ -37,8 +37,9 @@ namespace SharpDevelopWebApi.Controllers
             var customer = _db.Customers.Find(Id);
             if (customer != null)
                 return Ok(customer);
-            else
-                return BadRequest("Customer not found");
+            else{
+            	return BadRequest("Customer not found");
+            }
         }
 
         //[ApiAuthorize]
